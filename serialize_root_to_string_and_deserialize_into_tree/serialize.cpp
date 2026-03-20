@@ -11,10 +11,10 @@ struct TreeNode {
         // Convert string to integer value
         val = std::stoi(s);
     }
-    int val;
+    int val = std::stoi(sval);
+    std::string sval = "";
     TreeNode* left;
     TreeNode* right;
-    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
 };
 
 class Codec {
@@ -26,6 +26,10 @@ public:     // Encodes a tree to a single string.
         // Recursive case: serialize the current node and its left and right subtrees
         return std::to_string(root->val) + "," + serialize(root->left) + "," + serialize(root->right);
     };
+    int serialize(const std::string& s) {
+        // Convert string to integer value
+        return std::stoi(s);
+    }
 
     // Decodes your encoded data to tree.
     TreeNode* deserialize(const std::string& data){
