@@ -10,9 +10,32 @@
 // an assertion to check that the deserialization process correctly reconstructs 
 // the tree. Finally, it cleans up the allocated memory for the tree nodes.
 
+// Prints the tree sideways:
+// right subtree at top, root in middle, left subtree at bottom
+void printTree(TreeNode *root, int space = 0, int indent = 6)
+{
+    // Base case
+    if (!root)
+    {
+        return;
+    }
 
+    auto safe = [](TreeNode* n){
+        return n ? n->sval: "#";
+    };
 
+    // Increase spacing for the next level
+    space += indent;
 
+    // Print right subtree first
+    printTree(root->right, space, indent);
+
+    // Print current node
+    std::cout << std::string(space - indent, ' ') << safe(root) << '\n';
+
+    // Print left subtree
+    printTree(root->left, space, indent);
+};
 
 int main() {
     // Create a sample binary tree
@@ -35,18 +58,9 @@ int main() {
     std::cout << "Deserialized tree right->left child value: " << deserializedRoot->right->left->sval << std::endl;
     std::cout << "Deserialized tree right->right child value: " << deserializedRoot->right->right->sval <<std::endl;
 
-    if(root){
-        auto safe = [](TreeNode* n){
-            return n ? n->sval: "#";
-        };
-        std::cout << std::setw(20) << root->sval<<std::endl;
-        std::cout <<std::setw(19)<<  "/" << " \\ " << std::endl;
-        std::cout << std::setw(18) << root->left->sval << "   " << root->right->sval << std::endl;
-        std::cout << std::setw(17) << "/" << "| " << "  |" << "\\ " <<  std::endl;
-        std::cout << std::setw(16) << safe(root->left->left) << " " << safe(root->left->right) << "   "<<
-                                        safe(root->right->left) << " " << safe(root->right->right) <<std::endl;
-    }
+    
 
+    printTree(root);
     // Verify that the deserialized tree has the same struautry2293@outlook.cocture and values as the original tree
     TreeNode* node = new TreeNode("root");
     node->left = new TreeNode("left");
