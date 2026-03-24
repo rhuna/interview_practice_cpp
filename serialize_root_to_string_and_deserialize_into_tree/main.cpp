@@ -1,4 +1,5 @@
 #include <cassert>
+#include <iomanip>
 #include "serialize.cpp"
 
 
@@ -15,11 +16,11 @@
 
 int main() {
     // Create a sample binary tree
-    TreeNode* root = new TreeNode(1);
-    root->left = new TreeNode(2);
-    root->right = new TreeNode(3);
-    root->right->left = new TreeNode(4);
-    root->right->right = new TreeNode(5);
+    TreeNode* root = new TreeNode("1");
+    root->left = new TreeNode("2");
+    root->right = new TreeNode("3");
+    root->right->left = new TreeNode("4");
+    root->right->right = new TreeNode("5");
 
     // Serialize the tree and print the serialized string
     Codec codec;
@@ -28,17 +29,34 @@ int main() {
 
     // Deserialize the string back into a tree and print the values of the nodes
     TreeNode* deserializedRoot = codec.deserialize(serialized);
-    std::cout << "Deserialized tree root value: " << deserializedRoot->val << std::endl;
-    std::cout << "Deserialized tree left child value: " << deserializedRoot->left->val << std::endl;
-    std::cout << "Deserialized tree right child value: " << deserializedRoot->right->val << std::endl;
+    std::cout << "Deserialized tree root value: " << deserializedRoot->sval << std::endl;
+    std::cout << "Deserialized tree left child value: " << deserializedRoot->left->sval << std::endl;
+    std::cout << "Deserialized tree right child value: " << deserializedRoot->right->sval << std::endl;
+    std::cout << "Deserialized tree right->left child value: " << deserializedRoot->right->left->sval << std::endl;
+    std::cout << "Deserialized tree right->right child value: " << deserializedRoot->right->right->sval <<std::endl;
 
-    // Verify that the deserialized tree has the same structure and values as the original tree
+    if(root){
+        auto safe = [](TreeNode* n){
+            return n ? n->sval: "#";
+        };
+        std::cout << std::setw(20) << root->sval<<std::endl;
+        std::cout <<std::setw(19)<<  "/" << " \\ " << std::endl;
+        std::cout << std::setw(18) << root->left->sval << "   " << root->right->sval << std::endl;
+        std::cout << std::setw(17) << "/" << "| " << "  |" << "\\ " <<  std::endl;
+        std::cout << std::setw(16) << safe(root->left->left) << " " << safe(root->left->right) << "   "<<
+                                        safe(root->right->left) << " " << safe(root->right->right) <<std::endl;
+    }
+
+    // Verify that the deserialized tree has the same struautry2293@outlook.cocture and values as the original tree
     TreeNode* node = new TreeNode("root");
     node->left = new TreeNode("left");
     node->left->left = new TreeNode("left.left");
     node->right = new TreeNode("right");
+    node->right->left = new TreeNode("right.left");
+    node->right->right = new TreeNode("right.right");
 
     assert(codec.deserialize(codec.serialize(node))->left->left->sval == "left.left");
+    assert(codec.deserialize(codec.serialize(node))->right->right->sval == "right.right");
 
     // Clean up memory (delete the tree nodes)
     delete root->left;
